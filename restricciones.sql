@@ -1,5 +1,13 @@
 -- Falta revisar
 
+-- Restricción para validar que el correo sea válido
+ALTER TABLE Proveedores
+ADD CONSTRAINT chk_correo_proveedor CHECK (correo ~* '^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$');
+
+-- Restricción para validar que el correo sea válido
+ALTER TABLE Clientes
+ADD CONSTRAINT chk_correo_cliente CHECK (correo ~* '^[A-Z0-9._%-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$');
+
 -- Restricción para asegurar que el precio de un producto sea mayor a 0
 ALTER TABLE Productos
 ADD CONSTRAINT chk_precio_producto CHECK (precio > 0);
