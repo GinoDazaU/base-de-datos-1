@@ -55,8 +55,8 @@ CREATE TABLE Kiosko (
 
 -- Relación Clientes administra Kiosko
 CREATE TABLE Administra (
-    id_kiosko INT NOT NULL REFERENCES Kiosko(id_kiosko),
-    id_cliente INT NOT NULL REFERENCES Clientes(id_cliente),
+    id_kiosko INT REFERENCES Kiosko(id_kiosko),
+    id_cliente INT REFERENCES Clientes(id_cliente),
     PRIMARY KEY (id_kiosko, id_cliente)
 );
 
@@ -70,15 +70,15 @@ CREATE TABLE Pedidos (
 
 -- Relación Clientes hace Pedidos
 CREATE TABLE Hace (
-    id_pedido INT NOT NULL REFERENCES Pedidos(id_pedido),
-    id_cliente INT NOT NULL REFERENCES Clientes(id_cliente),
+    id_pedido INT REFERENCES Pedidos(id_pedido),
+    id_cliente INT REFERENCES Clientes(id_cliente),
     PRIMARY KEY (id_pedido, id_cliente)
 );
 
 -- Tabla Detalles Pedido
 CREATE TABLE DetallesPedido (
-    id_pedido INT NOT NULL REFERENCES Pedidos(id_pedido),
-    id_producto INT NOT NULL REFERENCES Productos(id_producto),
+    id_pedido INT REFERENCES Pedidos(id_pedido),
+    id_producto INT REFERENCES Productos(id_producto),
     cantidad_solicitada INT NOT NULL,
     precio_unitario DOUBLE PRECISION NOT NULL,
     subtotal DOUBLE PRECISION NOT NULL,
