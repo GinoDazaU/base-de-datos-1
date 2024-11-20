@@ -4,6 +4,7 @@ import random
 
 fake = Faker()
 
+# Inicialización de listas para cada tabla
 proveedores = []
 productos = []
 agua = []
@@ -18,7 +19,7 @@ administra = []
 hace = []
 
 # Datos Proveedores
-for i in range(100): # Cambiamos este numero luego
+for i in range(100):
     proveedores.append({
         'id_proveedor': i + 1,
         'nombre': fake.company(),
@@ -28,7 +29,8 @@ for i in range(100): # Cambiamos este numero luego
     })
 
 # Datos Productos y subclases
-for i in range(300): # Cambiamos este numero luego
+clases = ['agua'] * 40 + ['cerveza'] * 30 + ['gaseosa'] * 30
+for i, clase in enumerate(random.choices(clases, k=300)):
     id_proveedor = random.choice(proveedores)['id_proveedor']
     nombre = fake.word().capitalize()
     marca = fake.company()
@@ -46,8 +48,6 @@ for i in range(300): # Cambiamos este numero luego
         'precio': precio
     })
 
-    # Clasificar productos en subclases
-    clase = random.choice(['agua', 'cerveza', 'gaseosa'])
     if clase == 'agua':
         agua.append({'id_producto': i + 1, 'con_gas': random.choice([True, False])})
     elif clase == 'cerveza':
@@ -56,7 +56,7 @@ for i in range(300): # Cambiamos este numero luego
         gaseosas.append({'id_producto': i + 1, 'nivel_azucar': random.choice(['regular', 'light', 'zero'])})
 
 # Datos Clientes
-for i in range(200): # Cambiamos este numero luego
+for i in range(200):
     clientes.append({
         'id_cliente': i + 1,
         'numero': fake.msisdn()[:9],
@@ -66,7 +66,7 @@ for i in range(200): # Cambiamos este numero luego
     })
 
 # Datos Kiosko
-for i in range(50): # Cambiamos este numero luego
+for i in range(50):
     kioskos.append({
         'id_kiosko': i + 1,
         'nombre': fake.company(),
@@ -74,7 +74,7 @@ for i in range(50): # Cambiamos este numero luego
         'direccion': fake.address()
     })
 
-# Relacion Administra: Kiosko y Clientes
+# Relación Administra: Kiosko y Clientes
 for kiosko in kioskos:
     administra.append({
         'id_kiosko': kiosko['id_kiosko'],
@@ -82,15 +82,15 @@ for kiosko in kioskos:
     })
 
 # Datos Pedidos
-for i in range(500): # Cambiamos este numero luego
+for i in range(500):
     pedidos.append({
         'id_pedido': i + 1,
-        'total': 0,  # Esto con trigger
+        'total': 0,  # Se deja en 0 para que el trigger lo calcule
         'fecha': fake.date_this_year(),
         'estado': random.choice(['procesado', 'enviado', 'entregado'])
     })
 
-# Relacion Hace: Clientes hacen pedidos
+# Relación Hace: Clientes hacen pedidos
 for pedido in pedidos:
     hace.append({
         'id_pedido': pedido['id_pedido'],
@@ -100,41 +100,37 @@ for pedido in pedidos:
 # Datos DetallesPedido
 for pedido in pedidos:
     num_detalles = random.randint(1, 5)
-    subtotal_total = 0
 
     for _ in range(num_detalles):
         producto = random.choice(productos)
         cantidad_solicitada = random.randint(1, 10)
         precio_unitario = producto['precio']
-        subtotal = round(cantidad_solicitada * precio_unitario, 2)
-        subtotal_total += subtotal
 
         detalles_pedido.append({
             'id_pedido': pedido['id_pedido'],
             'id_producto': producto['id_producto'],
             'cantidad_solicitada': cantidad_solicitada,
-            'precio_unitario': precio_unitario,
-            'subtotal': subtotal
+            'precio_unitario': precio_unitario
         })
 
-    pedido['total'] = round(subtotal_total, 2)
-
 # Datos Pagos
-for i in range(300): # Cambiamos este numero luego
+for i in range(300):
     pedido = random.choice(pedidos)
     pagos.append({
         'id_pago': i + 1,
         'id_pedido': pedido['id_pedido'],
-        'monto': pedido['total'],
+        'monto': round(pedido['total'] * random.uniform(0.8, 1.0), 2),  # 80%-100% del total
         'fecha': fake.date_this_year(),
         'metodo_pago': random.choice(['efectivo', 'tarjeta', 'transferencia']),
         'estado': random.choice(['pendiente', 'completado'])
     })
 
+# Función para guardar los datos en CSV
 def save_to_csv(data, filename):
     pd.DataFrame(data).to_csv(filename, index=False)
     print(f"{filename} creado.")
 
+# Guardar cada tabla en un archivo CSV
 save_to_csv(proveedores, "proveedores.csv")
 save_to_csv(productos, "productos.csv")
 save_to_csv(agua, "agua.csv")
