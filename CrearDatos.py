@@ -5,12 +5,12 @@ import os
 
 fake = Faker()
 
-# Listas de datos temáticos
-marcas_agua = ["Pureza", "Vital", "AquaLife", "Fuente Clara"]
-marcas_cerveza = ["Cerveza Dorada", "Malta Real", "Lúpulo Fino", "Cerveza Artesana"]
-marcas_gaseosa = ["Fizz Cola", "Sabor Limonada", "Energía Zero", "Burbujeante"]
-nombres_productos = ["Agua Mineral", "Cerveza Artesanal", "Gaseosa Clásica", "Tónica"]
-nombres_kioskos = ["Tienda Esquina", "Kiosko Central", "Abastecimientos Rápidos", "La Esquina Verde"]
+# Listas de datos, recordar no usar ñ ni tilde
+marcas_agua = ["Socosani", "San Mateo", "Cielo", "San Luis"]
+marcas_cerveza = ["Cusquena", "Pilsen Callao", "Cristal", "Arequipena"]
+marcas_gaseosa = ["Inca Kola", "Kola Real", "Isaac Kola", "Triple Kola", "Coca Cola"]
+nombres_productos = ["Agua Mineral", "Cerveza Artesanal", "Gaseosa Clasica", "Tonica"]
+nombres_kioskos = ["Tienda Esquina", "Kiosko Central", "Abastecimientos Rapidos", "La Esquina Verde"]
 
 # Inicialización de listas para cada tabla
 proveedores = []
