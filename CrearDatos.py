@@ -3,9 +3,22 @@ from faker import Faker
 import random
 import os
 
+# Inicializar Faker
 fake = Faker()
 
-# Listas de datos, recordar no usar ñ ni tilde
+# Tamaño base para los datos
+base_size = 1000  # Cambia este valor: 1000, 10000, 100000, 1000000
+
+# Proporciones basadas en el tamaño total
+proveedores_size = base_size // 50  # Pocos proveedores
+clientes_size = base_size // 10  # Más clientes
+productos_size = base_size // 5  # Bastantes productos
+kioskos_size = base_size // 50  # Pocos kioskos
+pedidos_size = base_size // 2  # Más pedidos
+detalles_pedido_size = base_size  # Cada pedido tendrá al menos 1 detalle
+pagos_size = base_size // 3  # No todos los pedidos tendrán pagos
+
+# Listas de datos, recordar no usar ñ ni tildes
 marcas_agua = ["Socosani", "San Mateo", "Cielo", "San Luis"]
 marcas_cerveza = ["Cusquena", "Pilsen Callao", "Cristal", "Arequipena"]
 marcas_gaseosa = ["Inca Kola", "Kola Real", "Isaac Kola", "Triple Kola", "Coca Cola"]
@@ -27,7 +40,7 @@ administra = []
 hace = []
 
 # Datos Proveedores
-for i in range(100):
+for i in range(proveedores_size):
     proveedores.append({
         'id_proveedor': i + 1,
         'nombre': f"Distribuidora {fake.word().capitalize()}",
@@ -38,7 +51,7 @@ for i in range(100):
 
 # Datos Productos y subclases
 clases = ['agua'] * 40 + ['cerveza'] * 30 + ['gaseosa'] * 30
-for i, clase in enumerate(random.choices(clases, k=300)):
+for i, clase in enumerate(random.choices(clases, k=productos_size)):
     id_proveedor = random.choice(proveedores)['id_proveedor']
     nombre = f"{random.choice(nombres_productos)} {i+1}"
     marca = (
@@ -68,7 +81,7 @@ for i, clase in enumerate(random.choices(clases, k=300)):
         gaseosas.append({'id_producto': i + 1, 'nivel_azucar': random.choice(['regular', 'light', 'zero'])})
 
 # Datos Clientes
-for i in range(200):
+for i in range(clientes_size):
     clientes.append({
         'id_cliente': i + 1,
         'numero': fake.msisdn()[:9],
@@ -78,7 +91,7 @@ for i in range(200):
     })
 
 # Datos Kiosko
-for i in range(50):
+for i in range(kioskos_size):
     kioskos.append({
         'id_kiosko': i + 1,
         'nombre': random.choice(nombres_kioskos),
@@ -94,7 +107,7 @@ for kiosko in kioskos:
     })
 
 # Datos Pedidos
-for i in range(500):
+for i in range(pedidos_size):
     pedidos.append({
         'id_pedido': i + 1,
         'total': 0,  # Se deja en 0 para que el trigger lo calcule
@@ -110,7 +123,8 @@ for pedido in pedidos:
     })
 
 # Datos DetallesPedido
-detalles_existentes = set()  # Usamos un conjunto para evitar duplicados
+detalles_existentes = set()
+detalle_id = 1  # Contador global para id_detalle
 
 for pedido in pedidos:
     num_detalles = random.randint(1, 5)
@@ -119,20 +133,23 @@ for pedido in pedidos:
         producto = random.choice(productos)
         key = (pedido['id_pedido'], producto['id_producto'])
 
-        if key not in detalles_existentes:  # Verificamos duplicados
+        if key not in detalles_existentes:  # Evitar duplicados
             detalles_existentes.add(key)
             cantidad_solicitada = random.randint(1, 10)
             precio_unitario = producto['precio']
 
             detalles_pedido.append({
+                'id_detalle': detalle_id,
                 'id_pedido': pedido['id_pedido'],
                 'id_producto': producto['id_producto'],
                 'cantidad_solicitada': cantidad_solicitada,
                 'precio_unitario': precio_unitario
             })
 
+            detalle_id += 1
+
 # Datos Pagos
-for i in range(300):
+for i in range(pagos_size):
     pedido = random.choice(pedidos)
     pagos.append({
         'id_pago': i + 1,
@@ -151,7 +168,6 @@ def save_to_csv(data, filename):
     filepath = os.path.join(folder, filename)
     pd.DataFrame(data).to_csv(filepath, index=False)
     print(f"{filepath} creado.")
-    
 
 # Guardar cada tabla en un archivo CSV
 save_to_csv(proveedores, "proveedores.csv")
