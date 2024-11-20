@@ -15,7 +15,7 @@ CREATE TABLE Productos (
     marca VARCHAR(50) NOT NULL,
     descripcion VARCHAR(150) NOT NULL,
     cantidad INT NOT NULL,
-    precio DOUBLE PRECISION NOT NULL
+    precio NUMERIC(10, 2) NOT NULL
 );
 
 -- Tabla Agua (subclase de Productos)
@@ -27,7 +27,7 @@ CREATE TABLE Agua (
 -- Tabla Cervezas (subclase de Productos)
 CREATE TABLE Cervezas (
     id_producto INT PRIMARY KEY REFERENCES Productos(id_producto),
-    grados_alcohol DOUBLE PRECISION NOT NULL
+    grados_alcohol precio NUMERIC(4, 2) NOT NULL
 );
 
 -- Tabla Gaseosas (subclase de Productos)
@@ -63,7 +63,7 @@ CREATE TABLE Administra (
 -- Tabla Pedidos
 CREATE TABLE Pedidos (
     id_pedido INT PRIMARY KEY,
-    total DOUBLE PRECISION NOT NULL,
+    total NUMERIC(10, 2) NOT NULL,
     fecha DATE NOT NULL,
     estado VARCHAR(15) NOT NULL
 );
@@ -80,8 +80,8 @@ CREATE TABLE DetallesPedido (
     id_pedido INT REFERENCES Pedidos(id_pedido),
     id_producto INT REFERENCES Productos(id_producto),
     cantidad_solicitada INT NOT NULL,
-    precio_unitario DOUBLE PRECISION NOT NULL,
-    subtotal DOUBLE PRECISION GENERATED ALWAYS AS (cantidad_solicitada * precio_unitario) STORED,
+    precio_unitario NUMERIC(10, 2) NOT NULL,
+    subtotal NUMERIC(10, 2) GENERATED ALWAYS AS (cantidad_solicitada * precio_unitario) STORED,
     PRIMARY KEY (id_pedido, id_producto)
 );
 
@@ -90,7 +90,7 @@ CREATE TABLE DetallesPedido (
 CREATE TABLE Pagos (
     id_pago INT PRIMARY KEY,
     id_pedido INT NOT NULL REFERENCES Pedidos(id_pedido),
-    monto DOUBLE PRECISION NOT NULL,
+    monto NUMERIC(10, 2) NOT NULL,
     fecha DATE NOT NULL,
     metodo_pago VARCHAR(15) NOT NULL,
     estado VARCHAR(15) NOT NULL
