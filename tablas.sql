@@ -81,9 +81,10 @@ CREATE TABLE DetallesPedido (
     id_producto INT REFERENCES Productos(id_producto),
     cantidad_solicitada INT NOT NULL,
     precio_unitario DOUBLE PRECISION NOT NULL,
-    subtotal DOUBLE PRECISION NOT NULL,
+    subtotal DOUBLE PRECISION GENERATED ALWAYS AS (cantidad_solicitada * precio_unitario) STORED,
     PRIMARY KEY (id_pedido, id_producto)
 );
+
 
 -- Tabla Pagos
 CREATE TABLE Pagos (
