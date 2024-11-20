@@ -4,19 +4,22 @@ psql -U usuario -d nombre_base_datos
 
 SET search_path TO nombre_esquema;
 
-\COPY Proveedores FROM 'proveedores.csv' CSV HEADER;
-\COPY Productos FROM 'productos.csv' CSV HEADER;
-\COPY Agua FROM 'agua.csv' CSV HEADER;
-\COPY Cervezas FROM 'cervezas.csv' CSV HEADER;
-\COPY Gaseosas FROM 'gaseosas.csv' CSV HEADER;
-\COPY Clientes FROM 'clientes.csv' CSV HEADER;l
-\COPY Kiosko FROM 'kioskos.csv' CSV HEADER;
-\COPY Administra FROM 'administra.csv' CSV HEADER;
-\COPY Pedidos FROM 'pedidos.csv' CSV HEADER;
-\COPY Hace FROM 'hace.csv' CSV HEADER;
-\COPY DetallesPedido FROM 'detalles_pedido.csv' CSV HEADER;
-\COPY Pagos FROM 'pagos.csv' CSV HEADER;
+\i 'tablas.sql'
+\i 'restricciones.sql'
+\i 'triggers.sql'
 
+\COPY Proveedores FROM 'datos/proveedores.csv' CSV HEADER;
+\COPY Productos FROM 'datos/productos.csv' CSV HEADER;
+\COPY Agua FROM 'datos/agua.csv' CSV HEADER;
+\COPY Cervezas FROM 'datos/cervezas.csv' CSV HEADER;
+\COPY Gaseosas FROM 'datos/gaseosas.csv' CSV HEADER;
+\COPY Clientes FROM 'datos/clientes.csv' CSV HEADER;
+\COPY Kiosko FROM 'datos/kioskos.csv' CSV HEADER;
+\COPY Administra FROM 'datos/administra.csv' CSV HEADER;
+\COPY Pedidos FROM 'datos/pedidos.csv' CSV HEADER;
+\COPY Hace FROM 'datos/hace.csv' CSV HEADER;
+\COPY DetallesPedido FROM 'datos/detalles_pedido.csv' CSV HEADER;
+\COPY Pagos FROM 'datos/pagos.csv' CSV HEADER;
 
 Otros comandos basicos para psql:
 

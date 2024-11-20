@@ -99,20 +99,26 @@ for pedido in pedidos:
     })
 
 # Datos DetallesPedido
+detalles_existentes = set()  # Usamos un conjunto para evitar duplicados
+
 for pedido in pedidos:
     num_detalles = random.randint(1, 5)
 
     for _ in range(num_detalles):
         producto = random.choice(productos)
-        cantidad_solicitada = random.randint(1, 10)
-        precio_unitario = producto['precio']
+        key = (pedido['id_pedido'], producto['id_producto'])
 
-        detalles_pedido.append({
-            'id_pedido': pedido['id_pedido'],
-            'id_producto': producto['id_producto'],
-            'cantidad_solicitada': cantidad_solicitada,
-            'precio_unitario': precio_unitario
-        })
+        if key not in detalles_existentes:  # Verificamos duplicados
+            detalles_existentes.add(key)
+            cantidad_solicitada = random.randint(1, 10)
+            precio_unitario = producto['precio']
+
+            detalles_pedido.append({
+                'id_pedido': pedido['id_pedido'],
+                'id_producto': producto['id_producto'],
+                'cantidad_solicitada': cantidad_solicitada,
+                'precio_unitario': precio_unitario
+            })
 
 # Datos Pagos
 for i in range(300):
