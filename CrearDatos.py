@@ -5,6 +5,13 @@ import os
 
 fake = Faker()
 
+# Listas de datos temáticos
+marcas_agua = ["Pureza", "Vital", "AquaLife", "Fuente Clara"]
+marcas_cerveza = ["Cerveza Dorada", "Malta Real", "Lúpulo Fino", "Cerveza Artesana"]
+marcas_gaseosa = ["Fizz Cola", "Sabor Limonada", "Energía Zero", "Burbujeante"]
+nombres_productos = ["Agua Mineral", "Cerveza Artesanal", "Gaseosa Clásica", "Tónica"]
+nombres_kioskos = ["Tienda Esquina", "Kiosko Central", "Abastecimientos Rápidos", "La Esquina Verde"]
+
 # Inicialización de listas para cada tabla
 proveedores = []
 productos = []
@@ -23,7 +30,7 @@ hace = []
 for i in range(100):
     proveedores.append({
         'id_proveedor': i + 1,
-        'nombre': fake.company(),
+        'nombre': f"Distribuidora {fake.word().capitalize()}",
         'direccion': fake.address(),
         'correo': fake.company_email(),
         'numero': fake.msisdn()[:9]
@@ -33,9 +40,13 @@ for i in range(100):
 clases = ['agua'] * 40 + ['cerveza'] * 30 + ['gaseosa'] * 30
 for i, clase in enumerate(random.choices(clases, k=300)):
     id_proveedor = random.choice(proveedores)['id_proveedor']
-    nombre = fake.word().capitalize()
-    marca = fake.company()
-    descripcion = fake.sentence(nb_words=6)
+    nombre = f"{random.choice(nombres_productos)} {i+1}"
+    marca = (
+        random.choice(marcas_agua) if clase == "agua" else
+        random.choice(marcas_cerveza) if clase == "cerveza" else
+        random.choice(marcas_gaseosa)
+    )
+    descripcion = f"Producto de alta calidad: {marca}"
     cantidad = random.randint(0, 1000)
     precio = round(random.uniform(1.0, 75.0), 2)
 
@@ -70,7 +81,7 @@ for i in range(200):
 for i in range(50):
     kioskos.append({
         'id_kiosko': i + 1,
-        'nombre': fake.company(),
+        'nombre': random.choice(nombres_kioskos),
         'numero': fake.msisdn()[:9],
         'direccion': fake.address()
     })
@@ -140,7 +151,7 @@ def save_to_csv(data, filename):
     filepath = os.path.join(folder, filename)
     pd.DataFrame(data).to_csv(filepath, index=False)
     print(f"{filepath} creado.")
-
+    
 
 # Guardar cada tabla en un archivo CSV
 save_to_csv(proveedores, "proveedores.csv")
