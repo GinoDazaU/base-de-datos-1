@@ -2,7 +2,7 @@
 CREATE TABLE Proveedores (
     id_proveedor INT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
-    direccion VARCHAR(50) NOT NULL,
+    direccion VARCHAR(75) NOT NULL,
     correo VARCHAR(50) NOT NULL,
     numero VARCHAR(9) NOT NULL
 );
@@ -13,7 +13,7 @@ CREATE TABLE Productos (
     id_proveedor INT NOT NULL REFERENCES Proveedores(id_proveedor),
     nombre VARCHAR(50) NOT NULL,
     marca VARCHAR(50) NOT NULL,
-    descripcion VARCHAR(50) NOT NULL,
+    descripcion VARCHAR(150) NOT NULL,
     cantidad INT NOT NULL,
     precio DOUBLE PRECISION NOT NULL
 );
@@ -39,18 +39,18 @@ CREATE TABLE Gaseosas (
 -- Tabla Clientes
 CREATE TABLE Clientes (
     id_cliente INT PRIMARY KEY,
-    numero VARCHAR(15) NOT NULL,
-    nombre VARCHAR(100) NOT NULL,
-    correo VARCHAR(100) NOT NULL,
-    direccion VARCHAR(100) NOT NULL
+    numero VARCHAR(9) NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    correo VARCHAR(50) NOT NULL,
+    direccion VARCHAR(75) NOT NULL
 );
 
 -- Tabla Kiosko
 CREATE TABLE Kiosko (
     id_kiosko INT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    numero VARCHAR(15) NOT NULL,
-    direccion VARCHAR(100) NOT NULL
+    nombre VARCHAR(50) NOT NULL,
+    numero VARCHAR(9) NOT NULL,
+    direccion VARCHAR(75) NOT NULL
 );
 
 -- Relación Clientes administra Kiosko
@@ -65,7 +65,7 @@ CREATE TABLE Pedidos (
     id_pedido INT PRIMARY KEY,
     total DOUBLE PRECISION NOT NULL,
     fecha DATE NOT NULL,
-    estado VARCHAR(50) NOT NULL
+    estado VARCHAR(15) NOT NULL
 );
 
 -- Relación Clientes hace Pedidos
@@ -92,6 +92,6 @@ CREATE TABLE Pagos (
     id_pedido INT NOT NULL REFERENCES Pedidos(id_pedido),
     monto DOUBLE PRECISION NOT NULL,
     fecha DATE NOT NULL,
-    metodo_pago VARCHAR(50) NOT NULL,
-    estado VARCHAR(50) NOT NULL
+    metodo_pago VARCHAR(15) NOT NULL,
+    estado VARCHAR(15) NOT NULL
 );
