@@ -1,0 +1,65 @@
+Comandos basicos para el proyecto:
+
+psql -U usuario -d nombre_base_datos
+
+SET search_path TO nombre_esquema;
+
+\COPY Proveedores FROM 'proveedores.csv' CSV HEADER;
+\COPY Productos FROM 'productos.csv' CSV HEADER;
+\COPY Agua FROM 'agua.csv' CSV HEADER;
+\COPY Cervezas FROM 'cervezas.csv' CSV HEADER;
+\COPY Gaseosas FROM 'gaseosas.csv' CSV HEADER;
+\COPY Clientes FROM 'clientes.csv' CSV HEADER;
+\COPY Kiosko FROM 'kioskos.csv' CSV HEADER;
+\COPY Administra FROM 'administra.csv' CSV HEADER;
+\COPY Pedidos FROM 'pedidos.csv' CSV HEADER;
+\COPY Hace FROM 'hace.csv' CSV HEADER;
+\COPY DetallesPedido FROM 'detalles_pedido.csv' CSV HEADER;
+\COPY Pagos FROM 'pagos.csv' CSV HEADER;
+
+
+Otros comandos basicos para psql:
+
+# Conectarse a la base de datos
+psql -U postgres -d proyecto
+
+# Verificar conexión actual
+\conninfo
+
+# Listar todas las bases de datos disponibles
+\l
+
+# Cambiar de base de datos (si estás en otra y quieres cambiar)
+\c nombre_base_datos
+
+# Listar todos los esquemas de la base de datos
+\dn
+
+# Cambiar al esquema deseado (por ejemplo, public o uno personalizado)
+SET search_path TO nombre_esquema;
+
+# Verificar el esquema en uso
+SHOW search_path;
+
+# Listar todas las tablas del esquema actual
+\dt
+
+# Ver la estructura de una tabla específica
+\d nombre_de_la_tabla
+
+# Ejecutar archivos SQL para crear tablas, restricciones, y triggers
+\i 'ruta_del_archivo/tablas.sql'
+\i 'ruta_del_archivo/restricciones.sql'
+\i 'ruta_del_archivo/triggers.sql'
+
+# Importar datos desde archivos CSV
+\COPY Proveedores FROM 'ruta_del_archivo/proveedores.csv' CSV HEADER;
+
+# Verificar la carga de datos (contar registros de una tabla)
+SELECT COUNT(*) FROM nombre_de_la_tabla;
+
+# Ver algunos registros de una tabla para comprobar la información
+SELECT * FROM nombre_de_la_tabla LIMIT 5;
+
+# Salir del cliente psql
+\q
