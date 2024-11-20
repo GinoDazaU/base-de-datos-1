@@ -77,12 +77,13 @@ CREATE TABLE Hace (
 
 -- Tabla Detalles Pedido
 CREATE TABLE DetallesPedido (
+    id_detalle INT,
     id_pedido INT REFERENCES Pedidos(id_pedido),
     id_producto INT REFERENCES Productos(id_producto),
     cantidad_solicitada INT NOT NULL,
     precio_unitario NUMERIC(10, 2) NOT NULL,
     subtotal NUMERIC(10, 2) GENERATED ALWAYS AS (cantidad_solicitada * precio_unitario) STORED,
-    PRIMARY KEY (id_pedido, id_producto)
+    PRIMARY KEY (id_detalle, id_pedido, id_producto)
 );
 
 
