@@ -27,7 +27,7 @@ CREATE TABLE Agua (
 -- Tabla Cervezas (subclase de Productos)
 CREATE TABLE Cervezas (
     id_producto INT PRIMARY KEY REFERENCES Productos(id_producto),
-    grados_alcohol precio NUMERIC(4, 2) NOT NULL
+    grados_alcohol NUMERIC(4, 2) NOT NULL
 );
 
 -- Tabla Gaseosas (subclase de Productos)
