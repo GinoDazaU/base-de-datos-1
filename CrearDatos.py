@@ -1,6 +1,7 @@
 import pandas as pd
 from faker import Faker
 import random
+import os
 
 fake = Faker()
 
@@ -127,8 +128,13 @@ for i in range(300):
 
 # Función para guardar los datos en CSV
 def save_to_csv(data, filename):
-    pd.DataFrame(data).to_csv(filename, index=False)
-    print(f"{filename} creado.")
+    folder = "datos"
+    if not os.path.exists(folder):
+        os.makedirs(folder)
+    filepath = os.path.join(folder, filename)
+    pd.DataFrame(data).to_csv(filepath, index=False)
+    print(f"{filepath} creado.")
+
 
 # Guardar cada tabla en un archivo CSV
 save_to_csv(proveedores, "proveedores.csv")
