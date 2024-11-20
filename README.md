@@ -2,16 +2,16 @@
 
 ## TODO:
 
-1. **Implementación de la Base de Datos:**
-   - Crear las tablas en PostgreSQL basadas en el modelo relacional definido.
-   - Definir relaciones y restricciones clave.
-   - Configurar la base de datos para manejar datos sintéticos generados con Faker.
+1. **Implementación de la Base de Datos:** ✅
+   - Crear las tablas en PostgreSQL basadas en el modelo relacional definido. 
+   - Definir relaciones y restricciones clave. 
+   - Configurar la base de datos para manejar datos sintéticos generados con Faker. 
 
-2. **Poblar la Base de Datos:**
-   - Utilizar Faker para generar datos sintéticos realistas.
+2. **Poblar la Base de Datos:** ✅
+   - Utilizar Faker para generar datos sintéticos realistas. 
    - Insertar datos para todas las tablas: `Proveedores`, `Productos`, `Clientes`, `Pedidos`, `Pagos`, etc.
 
-3. **Consultas SQL:**
+3. **Consultas SQL:** ✅
    - Diseñar y ejecutar consultas para satisfacer los requerimientos operativos.
    - Ejemplos de consultas:
      - Estado de pedidos y pagos.
