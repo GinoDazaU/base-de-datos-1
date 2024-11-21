@@ -1,5 +1,5 @@
 -- Tabla Proveedores
-CREATE TABLE Proveedores (
+CREATE TABLE IF NOT EXISTS Proveedores (
     id_proveedor INT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     direccion VARCHAR(75) NOT NULL,
@@ -8,7 +8,7 @@ CREATE TABLE Proveedores (
 );
 
 -- Tabla Productos
-CREATE TABLE Productos (
+CREATE TABLE IF NOT EXISTS Productos (
     id_producto INT PRIMARY KEY,
     id_proveedor INT NOT NULL REFERENCES Proveedores(id_proveedor),
     nombre VARCHAR(50) NOT NULL,
@@ -19,13 +19,13 @@ CREATE TABLE Productos (
 );
 
 -- Tabla Agua (subclase de Productos)
-CREATE TABLE Agua (
+CREATE TABLE IF NOT EXISTS Agua (
     id_producto INT PRIMARY KEY REFERENCES Productos(id_producto),
     con_gas BOOLEAN NOT NULL
 );
 
 -- Tabla Cervezas (subclase de Productos)
-CREATE TABLE Cervezas (
+CREATE TABLE IF NOT EXISTS Cervezas (
     id_producto INT PRIMARY KEY REFERENCES Productos(id_producto),
     grados_alcohol NUMERIC(4, 2) NOT NULL
 );
@@ -37,7 +37,7 @@ CREATE TABLE Gaseosas (
 );
 
 -- Tabla Clientes
-CREATE TABLE Clientes (
+CREATE TABLE IF NOT EXISTS Clientes (
     id_cliente INT PRIMARY KEY,
     numero VARCHAR(9) NOT NULL,
     nombre VARCHAR(50) NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE Clientes (
 );
 
 -- Tabla Kiosko
-CREATE TABLE Kiosko (
+CREATE TABLE IF NOT EXISTS Kiosko (
     id_kiosko INT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     numero VARCHAR(9) NOT NULL,
@@ -54,14 +54,14 @@ CREATE TABLE Kiosko (
 );
 
 -- Relación Clientes administra Kiosko
-CREATE TABLE Administra (
+CREATE TABLE IF NOT EXISTS Administra (
     id_kiosko INT REFERENCES Kiosko(id_kiosko),
     id_cliente INT REFERENCES Clientes(id_cliente),
     PRIMARY KEY (id_kiosko, id_cliente)
 );
 
 -- Tabla Pedidos
-CREATE TABLE Pedidos (
+CREATE TABLE IF NOT EXISTS Pedidos (
     id_pedido INT PRIMARY KEY,
     total NUMERIC(10, 2) NOT NULL,
     fecha DATE NOT NULL,
@@ -69,14 +69,14 @@ CREATE TABLE Pedidos (
 );
 
 -- Relación Clientes hace Pedidos
-CREATE TABLE Hace (
+CREATE TABLE IF NOT EXISTS Hace (
     id_pedido INT REFERENCES Pedidos(id_pedido),
     id_cliente INT REFERENCES Clientes(id_cliente),
     PRIMARY KEY (id_pedido, id_cliente)
 );
 
 -- Tabla Detalles Pedido
-CREATE TABLE DetallesPedido (
+CREATE TABLE IF NOT EXISTS DetallesPedido (
     id_detalle INT,
     id_pedido INT REFERENCES Pedidos(id_pedido),
     id_producto INT REFERENCES Productos(id_producto),
@@ -88,7 +88,7 @@ CREATE TABLE DetallesPedido (
 
 
 -- Tabla Pagos
-CREATE TABLE Pagos (
+CREATE TABLE IF NOT EXISTS Pagos (
     id_pago INT PRIMARY KEY,
     id_pedido INT NOT NULL REFERENCES Pedidos(id_pedido),
     monto NUMERIC(10, 2) NOT NULL,
