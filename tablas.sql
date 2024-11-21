@@ -53,11 +53,10 @@ CREATE TABLE IF NOT EXISTS Kiosko (
     direccion VARCHAR(75) NOT NULL
 );
 
--- Relación Clientes administra Kiosko
+-- Relación Cliente administra Kioskos
 CREATE TABLE IF NOT EXISTS Administra (
-    id_kiosko INT REFERENCES Kiosko(id_kiosko),
-    id_cliente INT REFERENCES Clientes(id_cliente),
-    PRIMARY KEY (id_kiosko, id_cliente)
+    id_kiosko INT PRIMARY KEY REFERENCES Kiosko(id_kiosko),
+    id_cliente INT REFERENCES Clientes(id_cliente) NOT NULL
 );
 
 -- Tabla Pedidos
