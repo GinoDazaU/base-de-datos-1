@@ -126,30 +126,3 @@ CREATE TRIGGER trigger_validar_estado_pedido
 BEFORE INSERT OR UPDATE ON DetallesPedido
 FOR EACH ROW
 EXECUTE FUNCTION validar_estado_pedido();
-
-
-
--- Función para normalizar datos
-CREATE OR REPLACE FUNCTION normalizar_datos()
-RETURNS TRIGGER AS $$
-BEGIN
-    -- Normalizar los campos de texto
-    NEW.nombre = INITCAP(NEW.nombre);
-    NEW.descripcion = INITCAP(NEW.descripcion);
-    NEW.correo = LOWER(NEW.correo);
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
--- Crear el trigger para normalizar datos en Productos
-CREATE TRIGGER trigger_normalizar_productos
-BEFORE INSERT OR UPDATE ON Productos
-FOR EACH ROW
-EXECUTE FUNCTION normalizar_datos();
-
--- Crear el trigger para normalizar datos en Clientes
-CREATE TRIGGER trigger_normalizar_clientes
-BEFORE INSERT OR UPDATE ON Clientes
-FOR EACH ROW
-EXECUTE FUNCTION normalizar_datos();

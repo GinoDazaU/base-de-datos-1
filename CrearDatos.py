@@ -5,9 +5,11 @@ import os
 
 # Inicialización
 fake = Faker()
+Faker.seed(0)
+random.seed(0)
 
 # Variable de escalabilidad
-TOTAL_DATOS = 1000000  # Cambia a 1k, 10k, 100k, 1M según lo necesites
+TOTAL_DATOS = 100000  # Cambia a 1k, 10k, 100k, 1M según lo necesites
 
 # Proporciones ajustadas a las consultas
 PROVEEDORES = max(1, int(TOTAL_DATOS * 0.01))
@@ -16,7 +18,11 @@ CLIENTES = max(1, int(TOTAL_DATOS * 0.20))
 KIOSKOS = max(1, int(TOTAL_DATOS * 0.05))
 PEDIDOS = max(1, int(TOTAL_DATOS * 0.30))
 DETALLES_PEDIDO = max(1, int(TOTAL_DATOS * 0.40))
-PAGOS = max(1, int(PEDIDOS * 0.30))  # Algunos pedidos tendrán más de un pago
+PAGOS = max(1, int(PEDIDOS * 0.30))
+
+# Conjuntos para garantizar unicidad
+correos_generados = set()
+numeros_generados = set()
 
 # Generar datos
 proveedores, productos, agua, cervezas, gaseosas = [], [], [], [], []
@@ -28,8 +34,8 @@ for i in range(PROVEEDORES):
         'id_proveedor': i + 1,
         'nombre': f"Distribuidora {fake.word().capitalize()}",
         'direccion': fake.address(),
-        'correo': fake.company_email(),
-        'numero': fake.msisdn()[:9]
+        'correo': fake.unique.company_email(),
+        'numero': fake.unique.msisdn()[:9]
     })
 
 # Generar Productos y Subclases
@@ -41,8 +47,8 @@ for i in range(PRODUCTOS):
         ["Socosani", "San Mateo", "Cusquena", "Pilsen", "Inca Kola"]
     )
     descripcion = f"Producto de calidad {marca}"
-    cantidad = random.randint(0, 1000)
-    precio = round(random.uniform(1.0, 75.0), 2)
+    cantidad = random.randint(500, 1500)
+    precio = round(random.uniform(1.0, 15.0), 2)
 
     productos.append({
         'id_producto': i + 1,
@@ -56,22 +62,34 @@ for i in range(PRODUCTOS):
 
 # Generar Clientes
 for i in range(CLIENTES):
-    clientes.append({
-        'id_cliente': i + 1,
-        'numero': fake.msisdn()[:9],
-        'nombre': fake.name(),
-        'correo': fake.email(),
-        'direccion': fake.address()
-    })
+    while True:
+        correo = fake.email()
+        numero = fake.msisdn()[:9]
+        if correo not in correos_generados and numero not in numeros_generados:
+            correos_generados.add(correo)
+            numeros_generados.add(numero)
+            clientes.append({
+                'id_cliente': i + 1,
+                'numero': numero,
+                'nombre': fake.name(),
+                'correo': correo,
+                'direccion': fake.address()
+            })
+            break
 
 # Generar Kioskos
 for i in range(KIOSKOS):
-    kioskos.append({
-        'id_kiosko': i + 1,
-        'nombre': fake.company(),
-        'numero': fake.msisdn()[:9],
-        'direccion': fake.address()
-    })
+    while True:
+        numero = fake.msisdn()[:9]
+        if numero not in numeros_generados:
+            numeros_generados.add(numero)
+            kioskos.append({
+                'id_kiosko': i + 1,
+                'nombre': fake.company(),
+                'numero': numero,
+                'direccion': fake.address()
+            })
+            break
 
 # Relación Administra
 for kiosko in kioskos:
