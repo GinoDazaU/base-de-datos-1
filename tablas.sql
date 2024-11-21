@@ -69,9 +69,8 @@ CREATE TABLE IF NOT EXISTS Pedidos (
 
 -- Relación Clientes hace Pedidos
 CREATE TABLE IF NOT EXISTS Hace (
-    id_pedido INT REFERENCES Pedidos(id_pedido),
-    id_cliente INT REFERENCES Clientes(id_cliente),
-    PRIMARY KEY (id_pedido, id_cliente)
+    id_pedido INT PRIMARY KEY REFERENCES Pedidos(id_pedido),
+    id_cliente INT REFERENCES Clientes(id_cliente) NOT NULL
 );
 
 -- Tabla Detalles Pedido
