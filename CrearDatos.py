@@ -11,13 +11,13 @@ random.seed(0)
 
 # Variables de escalabilidad
 TOTAL_DATOS = 100000  # Cambia a 1k, 10k, 100k, 1M según lo necesites
-PROVEEDORES = max(1, int(TOTAL_DATOS * 0.05))  # 5%
-PRODUCTOS = max(1, int(TOTAL_DATOS * 0.4))  # 40%
-CLIENTES = max(1, int(TOTAL_DATOS * 0.15))  # 15%
-KIOSKOS = max(1, int(TOTAL_DATOS * 0.05))  # 5%
-PEDIDOS = max(1, int(TOTAL_DATOS * 0.25))  # 25%
-DETALLES_PEDIDO = max(1, int(TOTAL_DATOS * 0.4))  # 40%
-PAGOS = max(1, int(PEDIDOS * 0.5))  # 50% de pedidos
+PROVEEDORES = TOTAL_DATOS  # Relación directa con el volumen total
+PRODUCTOS = TOTAL_DATOS
+CLIENTES = 500  # Número arbitrario para tablas no esenciales
+KIOSKOS = 1000  # Número arbitrario para tablas no esenciales
+PEDIDOS = TOTAL_DATOS
+DETALLES_PEDIDO = TOTAL_DATOS
+PAGOS = TOTAL_DATOS
 
 # Conjuntos para garantizar unicidad
 correos_generados = set()
@@ -44,7 +44,7 @@ for i in range(PRODUCTOS):
     nombre = f"{fake.word().capitalize()} {i+1}"
     marca = random.choice(["Socosani", "San Mateo", "Cusquena", "Pilsen", "Inca Kola"])
     descripcion = f"Producto de calidad {marca}"
-    cantidad = random.randint(500, 1500)
+    cantidad = random.randint(1000, 5000)
     precio = round(random.uniform(1.0, 15.0), 2)
 
     productos.append({
@@ -66,52 +66,43 @@ for i in range(PRODUCTOS):
 
 # Generar Clientes
 for i in range(CLIENTES):
-    while True:
-        correo = fake.email()
-        numero = fake.msisdn()[:9]
-        if correo not in correos_generados and numero not in numeros_generados:
-            correos_generados.add(correo)
-            numeros_generados.add(numero)
-            clientes.append({
-                'id_cliente': i + 1,
-                'numero': numero,
-                'nombre': fake.name(),
-                'correo': correo,
-                'direccion': fake.address()
-            })
-            break
+    correo = fake.unique.company_email()
+    numero = fake.unique.msisdn()[:9]
+    clientes.append({
+        'id_cliente': i + 1,
+        'numero': numero,
+        'nombre': fake.name(),
+        'correo': correo,
+        'direccion': fake.address()
+    })
 
 # Generar Kioskos
 for i in range(KIOSKOS):
-    while True:
-        numero = fake.msisdn()[:9]
-        if numero not in numeros_generados:
-            numeros_generados.add(numero)
-            kioskos.append({
-                'id_kiosko': i + 1,
-                'nombre': fake.company(),
-                'numero': numero,
-                'direccion': fake.address()
-            })
-            break
+    numero = fake.unique.msisdn()[:9]
+    kioskos.append({
+        'id_kiosko': i + 1,
+        'nombre': fake.company(),
+        'numero': numero,
+        'direccion': fake.address()
+    })
 
-# Relación Administra
-for kiosko in kioskos:
+# Relación Administra (Clientes -> Kioskos)
+for i in range(KIOSKOS):
     administra.append({
-        'id_kiosko': kiosko['id_kiosko'],
-        'id_cliente': random.choice(clientes)['id_cliente']
+        'id_kiosko': kioskos[i]['id_kiosko'],
+        'id_cliente': clientes[i % len(clientes)]['id_cliente']
     })
 
 # Generar Pedidos
 for i in range(PEDIDOS):
     pedidos.append({
         'id_pedido': i + 1,
-        'total': 0,  # Se recalcula con triggers
+        'total': random.randint(500, 10000),  # Total ajustado
         'fecha': fake.date_between(start_date="-2y", end_date="today"),
         'estado': random.choice(['procesado', 'enviado', 'entregado'])
     })
 
-# Relación Hace
+# Relación Hace (Clientes -> Pedidos)
 for pedido in pedidos:
     hace.append({
         'id_pedido': pedido['id_pedido'],
@@ -143,7 +134,7 @@ for i in range(PAGOS):
     pagos.append({
         'id_pago': i + 1,
         'id_pedido': pedido['id_pedido'],
-        'monto': round(random.uniform(50.0, 500.0), 2),
+        'monto': random.randint(50, pedido['total'] - 1),
         'fecha': fake.date_between(start_date=pedido['fecha'], end_date="today"),
         'metodo_pago': random.choice(['efectivo', 'tarjeta', 'transferencia']),
         'estado': random.choice(['pendiente', 'completado'])
