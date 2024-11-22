@@ -145,6 +145,7 @@ for pedido in pedidos:
 for i in range(PAGOS):
     pedido = random.choice(pedidos)
     monto = random.randint(1, int(pedido['total'] * 0.05))  # Pagos pequeños (máx. 20% del total)
+    
     pagos.append({
         'id_pago': i + 1,
         'id_pedido': pedido['id_pedido'],
