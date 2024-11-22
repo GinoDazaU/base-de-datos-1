@@ -60,15 +60,36 @@ EXECUTE FUNCTION actualizar_stock_producto();
 
 
 
--- Función para validar el monto de pagos
+-- Función para validar y ajustar el monto de los pagos
 CREATE OR REPLACE FUNCTION validar_pago()
 RETURNS TRIGGER AS $$
+DECLARE
+    total_actual NUMERIC;
+    monto_aceptable NUMERIC;
 BEGIN
-    -- Verificar que el monto no exceda el total del pedido
-    IF NEW.monto > (
-        SELECT total FROM Pedidos WHERE id_pedido = NEW.id_pedido
-    ) THEN
-        RAISE EXCEPTION 'El monto del pago % excede el total del pedido %', NEW.monto, NEW.id_pedido;
+    -- Obtener el total actual del pedido
+    SELECT total
+    INTO total_actual
+    FROM Pedidos
+    WHERE id_pedido = NEW.id_pedido;
+
+    -- Calcular el monto aceptable (total menos los pagos existentes)
+    monto_aceptable := total_actual - COALESCE((
+        SELECT SUM(monto)
+        FROM Pagos
+        WHERE id_pedido = NEW.id_pedido
+    ), 0);
+
+    -- Si el monto excede el aceptable, ajustar
+    IF NEW.monto > monto_aceptable THEN
+        NEW.monto := monto_aceptable;
+    END IF;
+
+    -- Si el monto aceptable es cero, marcar el pedido como completado
+    IF monto_aceptable <= 0 THEN
+        UPDATE Pedidos
+        SET estado = 'completado'
+        WHERE id_pedido = NEW.id_pedido;
     END IF;
 
     RETURN NEW;
@@ -80,7 +101,6 @@ CREATE TRIGGER trigger_validar_pago
 BEFORE INSERT OR UPDATE ON Pagos
 FOR EACH ROW
 EXECUTE FUNCTION validar_pago();
-
 
 
 -- Función para actualizar el estado del pedido
