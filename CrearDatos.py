@@ -8,15 +8,15 @@ fake = Faker()
 Faker.seed(0)
 random.seed(0)
 
-# Variables de escalabilidad
-TOTAL_DATOS = 1000000  # Cambia a 1k, 10k, 100k, 1M según lo necesites
-PROVEEDORES = TOTAL_DATOS  # Cada tabla involucrada en consultas tiene TOTAL_DATOS
-PRODUCTOS = TOTAL_DATOS * 3
+TOTAL_DATOS = 1000000
+
+PROVEEDORES = TOTAL_DATOS
+PRODUCTOS = TOTAL_DATOS * 3 
 PEDIDOS = TOTAL_DATOS
 DETALLES_PEDIDO = TOTAL_DATOS
 PAGOS = TOTAL_DATOS
-CLIENTES = 500  # Arbitrario
-KIOSKOS = 1000  # Arbitrario
+CLIENTES = 500 
+KIOSKOS = 1000 
 
 # Conjuntos para garantizar unicidad
 correos_generados = set()
@@ -41,10 +41,13 @@ for i in range(PROVEEDORES):
             })
             break
 
-# Generar Productos y Subclases
+# Generar Productos y Subclases (Distribución fija)
+num_agua = PRODUCTOS // 3
+num_cervezas = PRODUCTOS // 3
+num_gaseosas = PRODUCTOS - num_agua - num_cervezas
+
 for i in range(PRODUCTOS):
     id_proveedor = random.choice(proveedores)['id_proveedor']
-    clase = random.choices(['agua', 'cerveza', 'gaseosa'], weights=[0.2, 0.3, 0.5], k=1)[0]
     nombre = f"{fake.word().capitalize()} {i+1}"
     marca = random.choice(["Socosani", "San Mateo", "Cusquena", "Pilsen", "Inca Kola"])
     descripcion = f"Producto de calidad {marca}"
@@ -61,11 +64,11 @@ for i in range(PRODUCTOS):
         'precio': precio
     })
 
-    if clase == 'agua':
+    if i < num_agua:
         agua.append({'id_producto': i + 1, 'con_gas': random.choice([True, False])})
-    elif clase == 'cerveza':
+    elif i < num_agua + num_cervezas:
         cervezas.append({'id_producto': i + 1, 'grados_alcohol': round(random.uniform(4.0, 12.0), 2)})
-    elif clase == 'gaseosa':
+    else:
         gaseosas.append({'id_producto': i + 1, 'nivel_azucar': random.choice(['regular', 'light', 'zero'])})
 
 # Generar Clientes
