@@ -43,12 +43,12 @@ ORDER BY
 -- Justificación:
 -- La empresa necesita entender qué tipo de productos tienen un mejor desempeño en ventas para ajustar estrategias de inventario y distribución.
 
-SELECT 
+SELECT
     tipo_producto,
-    SUM(dp.subtotal) AS ventas_totales,
-    ROUND(SUM(dp.subtotal) / (24.0), 2) AS promedio_mensual
+    SUM(subtotal) AS ventas_totales,
+    ROUND(SUM(subtotal) / 24.0, 2) AS promedio_mensual
 FROM (
-    SELECT 
+    SELECT
         dp.subtotal,
         CASE
             WHEN a.id_producto IS NOT NULL THEN 'Agua'
@@ -56,19 +56,19 @@ FROM (
             WHEN c.id_producto IS NOT NULL THEN 'Cerveza'
             ELSE 'Otros'
         END AS tipo_producto
-    FROM 
+    FROM
         DetallesPedido dp
         JOIN Productos p ON dp.id_producto = p.id_producto
         LEFT JOIN Agua a ON p.id_producto = a.id_producto
         LEFT JOIN Cervezas c ON p.id_producto = c.id_producto
         LEFT JOIN Gaseosas g ON p.id_producto = g.id_producto
         JOIN Pedidos ped ON dp.id_pedido = ped.id_pedido
-    WHERE 
+    WHERE
         ped.fecha >= CURRENT_DATE - INTERVAL '2 years'
 ) AS ventas_por_tipo
-GROUP BY 
+GROUP BY
     tipo_producto
-ORDER BY 
+ORDER BY
     ventas_totales DESC;
 
 -- Consulta 3: Tendencias de ventas estacionales
