@@ -2,7 +2,6 @@ import pandas as pd
 from faker import Faker
 import random
 import os
-from datetime import date, timedelta
 
 # Inicialización
 fake = Faker()
@@ -11,13 +10,13 @@ random.seed(0)
 
 # Variables de escalabilidad
 TOTAL_DATOS = 100000  # Cambia a 1k, 10k, 100k, 1M según lo necesites
-PROVEEDORES = TOTAL_DATOS  # Relación directa con el volumen total
+PROVEEDORES = TOTAL_DATOS  # Cada tabla involucrada en consultas tiene TOTAL_DATOS
 PRODUCTOS = TOTAL_DATOS
-CLIENTES = 500  # Número arbitrario para tablas no esenciales
-KIOSKOS = 1000  # Número arbitrario para tablas no esenciales
 PEDIDOS = TOTAL_DATOS
 DETALLES_PEDIDO = TOTAL_DATOS
 PAGOS = TOTAL_DATOS
+CLIENTES = 500  # Arbitrario
+KIOSKOS = 1000  # Arbitrario
 
 # Conjuntos para garantizar unicidad
 correos_generados = set()
@@ -29,13 +28,18 @@ clientes, kioskos, pedidos, detalles_pedido, pagos, administra, hace = [], [], [
 
 # Generar Proveedores
 for i in range(PROVEEDORES):
-    proveedores.append({
-        'id_proveedor': i + 1,
-        'nombre': f"Distribuidora {fake.word().capitalize()}",
-        'direccion': fake.address(),
-        'correo': fake.unique.company_email(),
-        'numero': fake.unique.msisdn()[:9]
-    })
+    while True:
+        numero = fake.unique.msisdn()[:9]
+        if numero not in numeros_generados:
+            numeros_generados.add(numero)
+            proveedores.append({
+                'id_proveedor': i + 1,
+                'nombre': f"Distribuidora {fake.word().capitalize()}",
+                'direccion': fake.address(),
+                'correo': fake.unique.company_email(),
+                'numero': numero
+            })
+            break
 
 # Generar Productos y Subclases
 for i in range(PRODUCTOS):
@@ -44,7 +48,7 @@ for i in range(PRODUCTOS):
     nombre = f"{fake.word().capitalize()} {i+1}"
     marca = random.choice(["Socosani", "San Mateo", "Cusquena", "Pilsen", "Inca Kola"])
     descripcion = f"Producto de calidad {marca}"
-    cantidad = random.randint(1000, 5000)
+    cantidad = random.randint(500, 1500)
     precio = round(random.uniform(1.0, 15.0), 2)
 
     productos.append({
@@ -66,15 +70,19 @@ for i in range(PRODUCTOS):
 
 # Generar Clientes
 for i in range(CLIENTES):
-    correo = fake.unique.company_email()
-    numero = fake.unique.msisdn()[:9]
-    clientes.append({
-        'id_cliente': i + 1,
-        'numero': numero,
-        'nombre': fake.name(),
-        'correo': correo,
-        'direccion': fake.address()
-    })
+    while True:
+        correo = fake.unique.company_email()
+        numero = fake.unique.msisdn()[:9]
+        if numero not in numeros_generados:
+            numeros_generados.add(numero)
+            clientes.append({
+                'id_cliente': i + 1,
+                'numero': numero,
+                'nombre': fake.name(),
+                'correo': correo,
+                'direccion': fake.address()
+            })
+            break
 
 # Generar Kioskos
 for i in range(KIOSKOS):
@@ -95,9 +103,10 @@ for i in range(KIOSKOS):
 
 # Generar Pedidos
 for i in range(PEDIDOS):
+    total_ficticio = random.randint(100, 1000)  # Asignar un total ficticio razonable
     pedidos.append({
         'id_pedido': i + 1,
-        'total': random.randint(500, 10000),  # Total ajustado
+        'total': total_ficticio,  # Asignar el total ficticio aquí
         'fecha': fake.date_between(start_date="-2y", end_date="today"),
         'estado': random.choice(['procesado', 'enviado', 'entregado'])
     })
@@ -131,10 +140,11 @@ for pedido in pedidos:
 # Generar Pagos
 for i in range(PAGOS):
     pedido = random.choice(pedidos)
+    monto_max = max(50, pedido['total'] - 1)  # Asegurar que el monto sea válido
     pagos.append({
         'id_pago': i + 1,
         'id_pedido': pedido['id_pedido'],
-        'monto': random.randint(50, pedido['total'] - 1),
+        'monto': random.randint(50, monto_max),  # Generar dentro del rango válido
         'fecha': fake.date_between(start_date=pedido['fecha'], end_date="today"),
         'metodo_pago': random.choice(['efectivo', 'tarjeta', 'transferencia']),
         'estado': random.choice(['pendiente', 'completado'])
