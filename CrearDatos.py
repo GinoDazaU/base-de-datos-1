@@ -11,16 +11,21 @@ random.seed(0)
 TOTAL_DATOS = 1000000
 
 PROVEEDORES = TOTAL_DATOS
-PRODUCTOS = TOTAL_DATOS * 3 
+PRODUCTOS = TOTAL_DATOS * 3
 PEDIDOS = TOTAL_DATOS
 DETALLES_PEDIDO = TOTAL_DATOS
 PAGOS = TOTAL_DATOS
-CLIENTES = 500 
-KIOSKOS = 1000 
+CLIENTES = 500
+KIOSKOS = 1000
 
 # Conjuntos para garantizar unicidad
 correos_generados = set()
 numeros_generados = set()
+
+# Marcas y nombres reales por categoría
+AGUA_MARCAS = ["Cielo", "San Mateo", "San Luis", "Socosani", "Andea"]
+CERVEZA_MARCAS = ["Cusqueña", "Pilsen", "Cristal", "Arequipeña", "Barena"]
+GASEOSA_MARCAS = ["Inca Kola", "Kola Real", "Coca Cola", "Pepsi", "Fanta"]
 
 # Generar datos
 proveedores, productos, agua, cervezas, gaseosas = [], [], [], [], []
@@ -48,11 +53,24 @@ num_gaseosas = PRODUCTOS - num_agua - num_cervezas
 
 for i in range(PRODUCTOS):
     id_proveedor = random.choice(proveedores)['id_proveedor']
-    nombre = f"{fake.word().capitalize()} {i+1}"
-    marca = random.choice(["Socosani", "San Mateo", "Cusquena", "Pilsen", "Inca Kola"])
-    descripcion = f"Producto de calidad {marca}"
     cantidad = random.randint(500, 1500)
     precio = round(random.uniform(5.0, 20.0), 2)  # Precios más altos
+
+    if i < num_agua:
+        marca = random.choice(AGUA_MARCAS)
+        nombre = f"Agua {marca} {i+1}"
+        descripcion = f"Agua mineral {marca} pura y refrescante"
+        agua.append({'id_producto': i + 1, 'con_gas': random.choice([True, False])})
+    elif i < num_agua + num_cervezas:
+        marca = random.choice(CERVEZA_MARCAS)
+        nombre = f"Cerveza {marca} {i+1}"
+        descripcion = f"Cerveza {marca}, calidad premium con sabor único"
+        cervezas.append({'id_producto': i + 1, 'grados_alcohol': round(random.uniform(4.0, 12.0), 2)})
+    else:
+        marca = random.choice(GASEOSA_MARCAS)
+        nombre = f"Gaseosa {marca} {i+1}"
+        descripcion = f"Gaseosa {marca} con sabor inconfundible y refrescante"
+        gaseosas.append({'id_producto': i + 1, 'nivel_azucar': random.choice(['regular', 'light', 'zero'])})
 
     productos.append({
         'id_producto': i + 1,
@@ -63,13 +81,6 @@ for i in range(PRODUCTOS):
         'cantidad': cantidad,
         'precio': precio
     })
-
-    if i < num_agua:
-        agua.append({'id_producto': i + 1, 'con_gas': random.choice([True, False])})
-    elif i < num_agua + num_cervezas:
-        cervezas.append({'id_producto': i + 1, 'grados_alcohol': round(random.uniform(4.0, 12.0), 2)})
-    else:
-        gaseosas.append({'id_producto': i + 1, 'nivel_azucar': random.choice(['regular', 'light', 'zero'])})
 
 # Generar Clientes
 for i in range(CLIENTES):

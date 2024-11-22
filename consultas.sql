@@ -1,3 +1,16 @@
+VACUUM ANALYZE Proveedores;
+VACUUM ANALYZE Productos;
+VACUUM ANALYZE Agua;
+VACUUM ANALYZE Cervezas;
+VACUUM ANALYZE Gaseosas;
+VACUUM ANALYZE Clientes;
+VACUUM ANALYZE Kiosko;
+VACUUM ANALYZE Administra;
+VACUUM ANALYZE Pedidos;
+VACUUM ANALYZE Hace;
+VACUUM ANALYZE DetallesPedido;
+VACUUM ANALYZE Pagos;
+
 -- Consulta 1: Eficiencia de los proveedores
 -- Pregunta:
 -- ¿Cuáles son los proveedores que abastecieron más productos en los últimos 6 meses y cuál fue su participación en las ventas de la distribuidora?
