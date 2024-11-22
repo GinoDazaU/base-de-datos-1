@@ -21,6 +21,10 @@ SET search_path TO nombre_esquema;
 \COPY DetallesPedido FROM 'datos/detalles_pedido.csv' CSV HEADER;
 \COPY Pagos FROM 'datos/pagos.csv' CSV HEADER;
 
+
+
+
+
 Otros comandos basicos para psql:
 
 # Conectarse a la base de datos
