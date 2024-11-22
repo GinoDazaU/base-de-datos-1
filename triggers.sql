@@ -1,4 +1,4 @@
--- Crear la función para actualizar el total de Pedidos
+-- Función para actualizar el total de Pedidos
 CREATE OR REPLACE FUNCTION actualizar_total_pedido()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -20,8 +20,6 @@ CREATE TRIGGER trigger_actualizar_total_pedido
 AFTER INSERT OR UPDATE OR DELETE ON DetallesPedido
 FOR EACH ROW
 EXECUTE FUNCTION actualizar_total_pedido();
-
-
 
 -- Función para actualizar el stock de productos
 CREATE OR REPLACE FUNCTION actualizar_stock_producto()
@@ -58,61 +56,49 @@ AFTER INSERT OR UPDATE OR DELETE ON DetallesPedido
 FOR EACH ROW
 EXECUTE FUNCTION actualizar_stock_producto();
 
-
-
 -- Función para validar y ajustar el monto de los pagos
 CREATE OR REPLACE FUNCTION validar_pago()
 RETURNS TRIGGER AS $$
-DECLARE
-    total_actual NUMERIC;
-    monto_aceptable NUMERIC;
 BEGIN
-    -- Obtener el total actual del pedido
-    SELECT total
-    INTO total_actual
-    FROM Pedidos
-    WHERE id_pedido = NEW.id_pedido;
-
-    -- Calcular el monto aceptable (total menos los pagos existentes)
-    monto_aceptable := total_actual - COALESCE((
-        SELECT SUM(monto)
-        FROM Pagos
+    -- Actualizar estado del pago a completado si el total es alcanzado
+    IF (SELECT COALESCE(SUM(monto), 0) 
+        FROM Pagos 
+        WHERE id_pedido = NEW.id_pedido) >= (
+        SELECT total 
+        FROM Pedidos 
         WHERE id_pedido = NEW.id_pedido
-    ), 0);
-
-    -- Si el monto excede el aceptable, ajustar
-    IF NEW.monto > monto_aceptable THEN
-        NEW.monto := monto_aceptable;
-    END IF;
-
-    -- Si el monto aceptable es cero, marcar el pedido como completado
-    IF monto_aceptable <= 0 THEN
-        UPDATE Pedidos
+    ) THEN
+        UPDATE Pagos
         SET estado = 'completado'
         WHERE id_pedido = NEW.id_pedido;
+    ELSE
+        NEW.estado := 'pendiente';
     END IF;
 
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
--- Crear el trigger para Pagos
+-- Crear el trigger para validar pagos
 CREATE TRIGGER trigger_validar_pago
 BEFORE INSERT OR UPDATE ON Pagos
 FOR EACH ROW
 EXECUTE FUNCTION validar_pago();
 
-
--- Función para actualizar el estado del pedido
+-- Función para actualizar el estado de los pedidos
 CREATE OR REPLACE FUNCTION actualizar_estado_pedido()
 RETURNS TRIGGER AS $$
 BEGIN
-    -- Actualizar el estado del pedido si el monto cubre el total
-    IF (SELECT COALESCE(SUM(monto), 0) FROM Pagos WHERE id_pedido = NEW.id_pedido) >= (
-        SELECT total FROM Pedidos WHERE id_pedido = NEW.id_pedido
+    -- Actualizar estado del pedido a entregado si el pago está completo
+    IF (SELECT COALESCE(SUM(monto), 0) 
+        FROM Pagos 
+        WHERE id_pedido = NEW.id_pedido) >= (
+        SELECT total 
+        FROM Pedidos 
+        WHERE id_pedido = NEW.id_pedido
     ) THEN
         UPDATE Pedidos
-        SET estado = 'completado'
+        SET estado = 'entregado'
         WHERE id_pedido = NEW.id_pedido;
     END IF;
 
@@ -120,28 +106,26 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Crear el trigger para Pagos
+-- Crear el trigger para actualizar el estado de pedidos
 CREATE TRIGGER trigger_actualizar_estado_pedido
 AFTER INSERT OR UPDATE ON Pagos
 FOR EACH ROW
 EXECUTE FUNCTION actualizar_estado_pedido();
 
-
-
--- Función para validar el estado del pedido
+-- Función para bloquear modificaciones a pedidos completados
 CREATE OR REPLACE FUNCTION validar_estado_pedido()
 RETURNS TRIGGER AS $$
 BEGIN
-    -- Bloquear la operación si el pedido está completado
-    IF (SELECT estado FROM Pedidos WHERE id_pedido = NEW.id_pedido) = 'completado' THEN
-        RAISE EXCEPTION 'No se pueden agregar o modificar detalles para un pedido completado';
+    -- Bloquear cualquier operación si el pedido está entregado
+    IF (SELECT estado FROM Pedidos WHERE id_pedido = NEW.id_pedido) = 'entregado' THEN
+        RAISE EXCEPTION 'No se pueden modificar detalles de un pedido entregado';
     END IF;
 
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
--- Crear el trigger para DetallesPedido
+-- Crear el trigger para validar modificaciones en pedidos
 CREATE TRIGGER trigger_validar_estado_pedido
 BEFORE INSERT OR UPDATE ON DetallesPedido
 FOR EACH ROW

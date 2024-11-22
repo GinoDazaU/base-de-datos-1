@@ -37,6 +37,10 @@ ADD CONSTRAINT chk_precio_unitario_detalle CHECK (precio_unitario > 0);
 ALTER TABLE Pagos
 ADD CONSTRAINT chk_metodo_pago CHECK (metodo_pago IN ('efectivo', 'tarjeta', 'transferencia'));
 
+-- Restricción de estado de pagos
+ALTER TABLE Pagos
+ADD CONSTRAINT chk_estado_pago CHECK (estado IN ('pendiente', 'completado'));
+
 -- Restricción de estados de pedido
 ALTER TABLE Pedidos
 ADD CONSTRAINT chk_estado_pedido CHECK (estado IN ('procesado', 'enviado', 'entregado'));

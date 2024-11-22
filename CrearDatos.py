@@ -9,7 +9,7 @@ Faker.seed(0)
 random.seed(0)
 
 # Variables de escalabilidad
-TOTAL_DATOS = 10000  # Cambia a 1k, 10k, 100k, 1M según lo necesites
+TOTAL_DATOS = 1000000  # Cambia a 1k, 10k, 100k, 1M según lo necesites
 PROVEEDORES = TOTAL_DATOS  # Cada tabla involucrada en consultas tiene TOTAL_DATOS
 PRODUCTOS = TOTAL_DATOS * 3
 PEDIDOS = TOTAL_DATOS
@@ -144,7 +144,7 @@ for pedido in pedidos:
 # Generar Pagos
 for i in range(PAGOS):
     pedido = random.choice(pedidos)
-    monto = random.randint(1, int(pedido['total'] * 0.05))  # Pagos pequeños (máx. 20% del total)
+    monto = random.randint(1, int(pedido['total'] * 0.2))  # Pagos pequeños (máx. 20% del total)
     
     pagos.append({
         'id_pago': i + 1,
