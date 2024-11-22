@@ -25,6 +25,7 @@ numeros_generados = set()
 # Generar datos
 proveedores, productos, agua, cervezas, gaseosas = [], [], [], [], []
 clientes, kioskos, pedidos, detalles_pedido, pagos, administra, hace = [], [], [], [], [], [], []
+pagos_totales = {pedido['id_pedido']: 0 for pedido in pedidos}
 
 # Generar Proveedores
 for i in range(PROVEEDORES):
@@ -144,15 +145,24 @@ for pedido in pedidos:
 # Generar Pagos
 for i in range(PAGOS):
     pedido = random.choice(pedidos)
-    monto = random.randint(1, int(pedido['total'] * 0.05))  # Pagos pequeños (máx. 20% del total)
+    id_pedido = pedido['id_pedido']
+    total_pedido = pedido['total']
+    pagos_acumulados = pagos_totales[id_pedido]
+
+    monto_restante = total_pedido - pagos_acumulados
+    if monto_restante <= 0:
+        continue
+    
+    monto = random.randint(1, min(int(monto_restante), int(total_pedido * 0.2)))  # Pagos pequeños (máx. 20% del total)
     pagos.append({
-        'id_pago': i + 1,
-        'id_pedido': pedido['id_pedido'],
+        'id_pago': len(pagos) + 1,
+        'id_pedido': id_pedido,
         'monto': monto,
         'fecha': fake.date_between(start_date=pedido['fecha'], end_date="today"),
         'metodo_pago': random.choice(['efectivo', 'tarjeta', 'transferencia']),
         'estado': 'pendiente'
     })
+    pagos_totales[id_pedido] += monto
 
 # Guardar en CSV
 def save_to_csv(data, filename):
