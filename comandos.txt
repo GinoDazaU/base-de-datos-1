@@ -1,8 +1,8 @@
-Comandos basicos para el proyecto:    # lo del parentesis es ejemplo de nombres
+Comandos basicos para el proyecto:
 
-psql -U usuario -d nombre_base_datos (proyecto)
+psql -U usuario -d nombre_base_datos
 
-SET search_path TO nombre_esquema; (s10k, s100k, s1M)
+SET search_path TO nombre_esquema;
 
 \i 'tablas.sql'
 \i 'restricciones.sql'
@@ -20,11 +20,6 @@ SET search_path TO nombre_esquema; (s10k, s100k, s1M)
 \COPY Hace FROM 'datos/hace.csv' CSV HEADER;
 \COPY DetallesPedido FROM 'datos/detalles_pedido.csv' CSV HEADER;
 \COPY Pagos FROM 'datos/pagos.csv' CSV HEADER;
-
-
-
-
-
 
 Otros comandos basicos para psql:
 
