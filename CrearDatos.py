@@ -9,9 +9,9 @@ Faker.seed(0)
 random.seed(0)
 
 # Variables de escalabilidad
-TOTAL_DATOS = 100000  # Cambia a 1k, 10k, 100k, 1M según lo necesites
+TOTAL_DATOS = 10000  # Cambia a 1k, 10k, 100k, 1M según lo necesites
 PROVEEDORES = TOTAL_DATOS  # Cada tabla involucrada en consultas tiene TOTAL_DATOS
-PRODUCTOS = TOTAL_DATOS
+PRODUCTOS = TOTAL_DATOS * 3
 PEDIDOS = TOTAL_DATOS
 DETALLES_PEDIDO = TOTAL_DATOS
 PAGOS = TOTAL_DATOS
@@ -49,7 +49,7 @@ for i in range(PRODUCTOS):
     marca = random.choice(["Socosani", "San Mateo", "Cusquena", "Pilsen", "Inca Kola"])
     descripcion = f"Producto de calidad {marca}"
     cantidad = random.randint(500, 1500)
-    precio = round(random.uniform(1.0, 15.0), 2)
+    precio = round(random.uniform(5.0, 20.0), 2)  # Precios más altos
 
     productos.append({
         'id_producto': i + 1,
@@ -103,10 +103,9 @@ for i in range(KIOSKOS):
 
 # Generar Pedidos
 for i in range(PEDIDOS):
-    total_ficticio = random.randint(100, 1000)  # Asignar un total ficticio razonable
     pedidos.append({
         'id_pedido': i + 1,
-        'total': total_ficticio,  # Asignar el total ficticio aquí
+        'total': 0,  # Se calculará con los detalles del pedido
         'fecha': fake.date_between(start_date="-2y", end_date="today"),
         'estado': random.choice(['procesado', 'enviado', 'entregado'])
     })
@@ -123,31 +122,36 @@ detalle_id = 1
 detalles_existentes = set()
 for pedido in pedidos:
     num_detalles = random.randint(1, 5)
+    total_pedido = 0
     for _ in range(num_detalles):
         producto = random.choice(productos)
         key = (pedido['id_pedido'], producto['id_producto'])
         if key not in detalles_existentes:
             detalles_existentes.add(key)
+            cantidad = random.randint(1, 10)
+            subtotal = cantidad * producto['precio']
             detalles_pedido.append({
                 'id_detalle': detalle_id,
                 'id_pedido': pedido['id_pedido'],
                 'id_producto': producto['id_producto'],
-                'cantidad_solicitada': random.randint(1, 10),
+                'cantidad_solicitada': cantidad,
                 'precio_unitario': producto['precio']
             })
+            total_pedido += subtotal
             detalle_id += 1
+    pedido['total'] = round(total_pedido, 2)  # Actualizar el total del pedido
 
 # Generar Pagos
 for i in range(PAGOS):
     pedido = random.choice(pedidos)
-    monto_max = max(50, pedido['total'] - 1)  # Asegurar que el monto sea válido
+    monto = random.randint(1, int(pedido['total'] * 0.2))  # Pagos pequeños (máx. 20% del total)
     pagos.append({
         'id_pago': i + 1,
         'id_pedido': pedido['id_pedido'],
-        'monto': random.randint(50, monto_max),  # Generar dentro del rango válido
+        'monto': monto,
         'fecha': fake.date_between(start_date=pedido['fecha'], end_date="today"),
         'metodo_pago': random.choice(['efectivo', 'tarjeta', 'transferencia']),
-        'estado': random.choice(['pendiente', 'completado'])
+        'estado': 'pendiente'
     })
 
 # Guardar en CSV
