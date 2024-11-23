@@ -2,7 +2,6 @@ SET enable_seqscan = ON;
 SET enable_bitmapscan = OFF;
 SET enable_indexscan = OFF;
 
-
 VACUUM (FULL, ANALYZE) proveedores;
 VACUUM (FULL, ANALYZE) productos;
 VACUUM (FULL, ANALYZE) agua;
@@ -15,6 +14,9 @@ VACUUM (FULL, ANALYZE) pedidos;
 VACUUM (FULL, ANALYZE) hace;
 VACUUM (FULL, ANALYZE) detallespedido;
 VACUUM (FULL, ANALYZE) pagos;
+
+
+
 
 -- Consulta 1: Eficiencia de los proveedores
 -- Pregunta:
