@@ -23,8 +23,6 @@ SET search_path TO nombre_esquema;
 
 
 
-
-
 Otros comandos basicos para psql:
 
 # Conectarse a la base de datos
