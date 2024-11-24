@@ -11,7 +11,7 @@ SELECT
     p.nombre AS producto,
     p.marca AS marca,
     prov.nombre AS proveedor,
-    COUNT(dp.id_producto) AS productos_vendidos,
+    SUM(dp.cantidad_solicitada) AS productos_vendidos,
     SUM(dp.subtotal) AS total_ventas,
     ROUND(SUM(dp.subtotal) / COUNT(DISTINCT ped.id_pedido), 2) AS promedio_venta_por_pedido
 FROM DetallesPedido dp
