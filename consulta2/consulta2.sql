@@ -1,5 +1,5 @@
--- Pregunta: ¿Qué tipos de productos han sido los más vendidos en los últimos cinco años, cuáles son sus nombres y marcas, y qué proveedores los distribuyen?
--- Justificación: Esta consulta responde al análisis de desempeño por tipo de producto, considerando nombres, marcas y proveedores. Esto es útil para identificar los productos más populares, analizar las relaciones con los proveedores y planificar estrategias de inventario, promoción y alianzas. También ayuda a detectar patrones de consumo, medir la contribución de cada producto al total de ventas, y evaluar la eficiencia de los proveedores en términos de popularidad y ventas promedio por pedido.
+-- Pregunta: ¿Cuáles son los productos más vendidos, su impacto económico, y qué proveedores y marcas están detrás de ellos en los últimos cinco años?
+-- Justificación: Esta consulta permite identificar los productos más populares, sus marcas y proveedores, junto con su impacto en las ventas. Es útil para planificar estrategias de inventario, promociones y evaluar el desempeño de los proveedores.
 
 SELECT 
     CASE
