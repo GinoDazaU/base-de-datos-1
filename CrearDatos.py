@@ -8,15 +8,15 @@ fake = Faker()
 Faker.seed(0)
 random.seed(0)
 
-TOTAL_DATOS = 1000 # CAMBIAR ESTO dependiendo del esquema
+TOTAL_DATOS = 1000000 # CAMBIAR ESTO dependiendo del esquema
 
 PROVEEDORES = TOTAL_DATOS
 PRODUCTOS = TOTAL_DATOS * 3
 PEDIDOS = TOTAL_DATOS
 DETALLES_PEDIDO = TOTAL_DATOS
 PAGOS = TOTAL_DATOS
-CLIENTES = 500
-KIOSKOS = 1000
+CLIENTES = TOTAL_DATOS
+KIOSKOS = TOTAL_DATOS
 
 # Conjuntos para garantizar unicidad
 correos_generados = set()
